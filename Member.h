@@ -3,62 +3,81 @@
 
 #include <iostream>
 #include <string>
-#include <unordered_map>
-#include <vector>
+
+#include <cstdio>
+#include <cstring>
 using namespace std;
 
-enum MemberType {
-    CpMem = 1,
-    CmMem
-};
+#define MAX_STRING 32
+#define INPUT_FILE_NAME "input.txt"
+#define OUTPUT_FILE_NAME "output.txt"
+
+string user = "";
 
 class Mem {
 private:
-    //string memberID;
-    //string memberPW;
-
-    struct MemberInfo {
-        string num;
-        string name;
-        string password;
-    };
-
-    unordered_map<string, MemberInfo> members; // È¸»çÀÌ¸§ or °³ÀÎÀÌ¸§ / ±¸Á¶Ã¼(¹øÈ£,id,pw)
-    string currentUser;
+    
+    char* memID;
+    char* memPW;
 
 public:
-    //Mem(string id, string pwd) :memberID(id), memberPW(pwd) {};
-
-    //virtual void showInfo() = 0; // ¼ø¼ö °¡»ó ÇÔ¼ö
-
-    void registerMember(MemberType type);
-    void removeMember(string id);
-    bool login(string id, string password);
-    void logout();
+    Mem(char* id, char* pwd);
+    char* getPW();
+    char* getID();
+    bool login(char* id, char* pwd);
+   
 };
 
-/*class CpMem : public Mem {
+class CpMem : public Mem {
 private:
-    string companyName; // È¸»ç ÀÌ¸§
-    string companyNum; // »ç¾÷ÀÚ ¹øÈ£ 
+    char* cpName; // íšŒì‚¬ ì´ë¦„
+    char* cpNum; // ì‚¬ì—…ì ë²ˆí˜¸ 
 
 public:
-    CpMem(string id, string pwd, string name, string number)
-        :Mem(id, pwd), companyName(name), companyNum(number) {};
+    CpMem(char* id, char* pwd, char* name, char* number);
 
-    //void showInfo();
 };
 
 class CmMem : public Mem {
 private:
-    string memberName;
-    string memberNum; // ÁÖ¹Î ¹øÈ£ 
+    char* cmName;
+    char* cmNum; // ì£¼ë¯¼ ë²ˆí˜¸ 
 
 public:
-    CmMem(string id, string pwd, string memberName, string number)
-        :Mem(id, pwd), memberName(memberName), memberNum(number) {};
+    CmMem(char* id, char* pwd, char* name, char* number);
 
-    //void showInfo();
-};*/
+};
+void registerCpMem(char* id, char* pw, char* name, char* number);
+void registerCmMem(char* id, char* pw, char* name, char* number);
+//----------------------------------------------------------------------
+class SignInUI
+{
+public:
+    void startInterface(FILE* out_fp);
+    void requestSignIn(FILE* in_fp, FILE* out_fp); // ì…ë ¥ ë°›ìŒ 
+};
+class SignIn
+{
+public:
+    SignIn(int num, char* id, char* pwd, char* name, char* number);
+    void addCpMem(char* id, char* pwd, char* name, char* number);
+    void addCmMem(char* id, char* pwd, char* name, char* number);
 
-#endif  // MEMBERSHIP_H
+};
+//-------------------------------------------------------------------
+class LoginUI
+{
+public:
+    void startInterface(FILE* out_fp);
+    void requestLogin(FILE* in_fp, FILE* out_fp);
+};
+class Login    
+{
+private:
+    Mem mem;
+public:
+    Login(char* id, char* pwd, FILE* out_fp);
+};
+//-------------------------------------------------------------------
+
+#endif  
