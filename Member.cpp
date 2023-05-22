@@ -92,8 +92,43 @@ Login::Login(char* id, char* pwd, FILE* out_fp) // 수정 필요
 bool Mem::login(char* id, char* pwd)
 {
     if (strcmp(id, memID) == 0 && strcmp(pwd, memPW) == 0)
+
+    {
+        user = id;
         return true;
+    }
     else
         return false;
 }
 //-------------------------------------------------------------------
+void LogoutUI::startInterface(FILE* out_fp)
+{
+    fprintf(out_fp, "2.2.로그아웃 \n");
+}
+void LogoutUI::requestLogout(FILE* out_fp)
+{
+    fprintf(out_fp, "> %s", user);
+    Logout();
+}
+Logout::Logout()
+{
+    Mem::logout();
+}
+void Mem::logout()
+{
+    user = "";
+}
+//------------------------------------------------------------------
+void DropUI::startInterface(FILE* out_fp)
+{
+    fprintf(out_fp, "1.2. 회원탈퇴 \n");
+}
+void DropUI::requestDrop(FILE* out_fp)
+{
+    fprintf(out_fp, "> %s", user);
+    Drop::deleteUser();
+}
+void Drop::deleteUser()
+{
+    // 소멸자 써야하는데 how? 
+}
