@@ -1,91 +1,99 @@
-#include <iostream>
-#include <string>
-#include <unordered_map>
 #include "Member.h"
 using namespace std;
 
-
-void Mem::registerMember(MemberType type) 
+Mem::Mem(char* id, char* pw)
 {
-    MemberInfo member;
-    string id;
-    bool check = true;
-    if (type == CpMem) 
-    {
-        cout << "È¸»ç È¸¿øÀ¸·Î È¸¿ø°¡ÀÔÇÕ´Ï´Ù." << endl;
-        cout << "È¸»ç ÀÌ¸§À» ÀÔ·ÂÇØÁÖ¼¼¿ä : ";
-        getline(cin, member.name);
-        cout << "»ç¾÷ÀÚ ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä : ";
-        getline(cin, member.num);
-    }
+    memID = id;
+    memPW = pw;
+}
+char* Mem::getPW()
+{
+    return memPW;
+}
+char* Mem::getID()
+{
+    return memID;
+}
+
+void registerCpMem(char* id, char*pw, char* name, char*number)
+{
+    CpMem* cpMem = new CpMem(id, pw, name, number);
+}
+void registerCmMem(char* id, char* pw, char* name, char* number)
+{
+    CmMem* cmMem = new CmMem(id, pw, name, number);
+}
+
+CpMem::CpMem(char* id, char* pwd, char* name, char* number)
+    : Mem(id, pwd), cpName(name), cpNum(number) {};
+
+CmMem::CmMem(char* id, char* pwd, char* name, char* number)
+    :Mem(id, pwd), cmName(name), cmNum(number) {};
+
+
+void SignInUI::startInterface(FILE* out_fp)
+{
+    fprintf(out_fp, "1.1. íšŒì› ê°€ì…\n");
+} // ì²˜ìŒ ì‹œì‘ 
+
+void SignInUI::requestSignIn(FILE* in_fp, FILE* out_fp)
+{
+
+    int type;
+    char* name = new char[MAX_STRING];
+    char* num = new char[MAX_STRING];
+    char* ID = new char[MAX_STRING];
+    char* PW = new char[MAX_STRING];
+    
+    fscanf(in_fp, "%d %s %s %s %s",  &type, name, num, ID, PW); // ì½ê¸° 
+    fprintf(out_fp, "> %d %s %s %s %s", type, name, num, ID, PW); 
+    SignIn(type, ID ,PW, name, num);
+         
+}
+
+SignIn::SignIn(int num, char* id, char* pwd, char* name, char* number)
+{
+    if (num == 1)
+        addCpMem(id, pwd, name, number);
     else
-    {
-        cout << "°³ÀÎ È¸¿øÀ¸·Î È¸¿ø°¡ÀÔÇÕ´Ï´Ù." << endl;
-        cout << "ÀÌ¸§¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä : ";
-        getline(cin, member.name);
-        cout << "ÁÖ¹Î ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä : ";
-        getline(cin, member.num);
+        addCmMem(id, pwd, name, number);
 
-    }
-    cout << "»ç¿ëÇÏ°íÀÚ ÇÏ´Â ID¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä : ";
-    getline(cin, id);
-    while (check)
-    {
-        if (members.find(id) != members.end())
-        {
-            cout << "ÇØ´ç ¾ÆÀÌµğ´Â ÀÌ¹Ì »ç¿ëÁßÀÔ´Ï´Ù.\n ´Ù¸¥ ¾ÆÀÌµğ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä." << endl;
-            cout << "»ç¿ëÇÏ°íÀÚ ÇÏ´Â ID¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä : ";
-            getline(cin, id);
-        }
-        else
-        {
-            cout << "ÇØ´ç ¾ÆÀÌµğ´Â »ç¿ë °¡´ÉÇÕ´Ï´Ù." << endl;
-            check = false;
-        }
-    }
-
-    cout << "»ç¿ëÇÏ°íÀÚ ÇÏ´Â ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä :  ";
-    getline(cin, member.password);
-
-    members[id] = member;
-
-    cout << "¼º°øÀûÀ¸·Î È¸¿ø°¡ÀÔ µÇ¾ú½À´Ï´Ù." << endl;
 }
-void Mem::removeMember(string id)
+void SignIn::addCpMem(char* id, char* pwd, char* name, char* number)
 {
-    if (members.find(id) != members.end()) 
-    {
-        members.erase(id);
-
-        if (currentUser == id)
-        {
-            currentUser = "";
-        }
-
-        cout << "È¸¿ø Å»ÅğµÇ¾ú½À´Ï´Ù." << endl;
-    }
-    else 
-    {
-        cout << "È¸¿ø Á¤º¸¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù." << endl;
-    }
+     CpMem(id, pwd, name, number);
 }
-bool Mem::login(string id, string password)
+void SignIn::addCmMem(char* id, char* pwd, char* name, char* number)
+{
+     CmMem(id, pwd, name, number);
+}
+//-------------------------------------------------------------------
+void LoginUI::startInterface(FILE* out_fp)
+{
+    fprintf(out_fp, "2.1. ë¡œê·¸ì¸ \n");
+} // ì²˜ìŒ ì‹œì‘
+void LoginUI::requestLogin(FILE* in_fp, FILE* out_fp)
+{
+    char* ID = new char[MAX_STRING];
+    char* PW = new char[MAX_STRING];
+    fscanf(in_fp, "%s %s", ID, PW); 
+   //fprintf(out_fp, ">%s %s",ID, PW); // í‹€ë ¸ì„ ë•Œ ê°ì•ˆí•´ì„œ ìœ„ì¹˜ ë³€ê²½ ê°€ëŠ¥ 
+    Login(ID,PW,out_fp);
+
+}
+
+Login::Login(char* id, char* pwd, FILE* out_fp) // ìˆ˜ì • í•„ìš” 
 {
     
-    if (members.find(id) != members.end() && members[id].password == password)
-    {
-        currentUser = id;
-        cout << "¼º°øÀûÀ¸·Î ·Î±×ÀÎµÇ¾ú½À´Ï´Ù." << endl;
-        return true;
-    }
-    else 
-    {
-        cout << "¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.\n ´Ù½Ã ½ÃµµÇØ ÁÖ¼¼¿ä" << endl;
-        return false;
-    }
+    if (mem.login(id, pwd))
+        fprintf(out_fp, "> %s %s", id, pwd);
+
 }
-void Mem::logout()
+bool Mem::login(char* id, char* pwd)
 {
-    currentUser = "";
-    cout << "·Î±×¾Æ¿ô µÇ¾ú½À´Ï´Ù." << endl;
+    if (strcmp(id, memID) == 0 && strcmp(pwd, memPW) == 0)
+        return true;
+    else
+        return false;
 }
+//-------------------------------------------------------------------
