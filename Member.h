@@ -25,6 +25,7 @@ public:
     char* getPW();
     char* getID();
     bool login(char* id, char* pwd);
+    static void logout();
    
 };
 
@@ -79,5 +80,31 @@ public:
     Login(char* id, char* pwd, FILE* out_fp);
 };
 //-------------------------------------------------------------------
+class LogoutUI
+{
+public:
+    void startInterface(FILE* out_fp);
+    void requestLogout(FILE* out_fp);
+};
+class Logout
+{
+public:
+    Logout();
+};
+//---------------------------------------------------------------------
+class DropUI
+{
+public:
+    void startInterface(FILE* out_fp);
+    void requestDrop(FILE* out_fp);
+};
+
+
+class Drop
+{
+public:
+  static void deleteUser();
+};
+
 
 #endif  
