@@ -12,7 +12,7 @@ using namespace std;
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
 
-string user = "";
+// string user = "";
 
 class Mem {
 private:
@@ -21,12 +21,12 @@ private:
     char* memPW;
 
 public:
+    Mem();
     Mem(char* id, char* pwd);
     char* getPW();
     char* getID();
     bool login(char* id, char* pwd);
     static void logout();
-   
 };
 
 class CpMem : public Mem {
@@ -35,8 +35,9 @@ private:
     char* cpNum; // 사업자 번호 
 
 public:
+    CpMem();
     CpMem(char* id, char* pwd, char* name, char* number);
-
+    char *getName();
 };
 
 class CmMem : public Mem {
@@ -45,46 +46,58 @@ private:
     char* cmNum; // 주민 번호 
 
 public:
+    CmMem();
     CmMem(char* id, char* pwd, char* name, char* number);
-
+    char *getName();
 };
 void registerCpMem(char* id, char* pw, char* name, char* number);
 void registerCmMem(char* id, char* pw, char* name, char* number);
 //----------------------------------------------------------------------
+// Mem signIn(FILE* in_fp, FILE* out_fp);
+void signIn(int type, FILE* in_fp, FILE* out_fp, CpMem* cpMems, CmMem* cmMems, int& cpMemIndex, int& cmMemIndex);
+
+class SignIn
+{
+public:
+    void signin(int num, char *id, char *pwd, char *name, char *number, CpMem *cpMems, CmMem *cmMems, int &cpMemIndex, int &cmMemIndex);
+    CpMem addCpMem(char* id, char* pwd, char* name, char* number);
+    CmMem addCmMem(char* id, char* pwd, char* name, char* number);
+
+};
+
 class SignInUI
 {
 public:
     void startInterface(FILE* out_fp);
-    void requestSignIn(FILE* in_fp, FILE* out_fp); // 입력 받음 
-};
-class SignIn
-{
-public:
-    SignIn(int num, char* id, char* pwd, char* name, char* number);
-    void addCpMem(char* id, char* pwd, char* name, char* number);
-    void addCmMem(char* id, char* pwd, char* name, char* number);
-
+    void requestSignIn(int type, FILE *in_fp, FILE *out_fp, SignIn &signinClass, CpMem *cpMems, CmMem *cmMems, int &cpMemIndex, int &cmMemIndex); // 입력 받음 
 };
 //-------------------------------------------------------------------
+
+void login(FILE *in_fp, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex);
+
+
+class Login    
+{
+// private:
+//     Mem mem;
+public:
+    void login(char *id, char *pwd, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex);
+};
 class LoginUI
 {
 public:
     void startInterface(FILE* out_fp);
-    void requestLogin(FILE* in_fp, FILE* out_fp);
-};
-class Login    
-{
-private:
-    Mem mem;
-public:
-    Login(char* id, char* pwd, FILE* out_fp);
+    void requestLogin(FILE *in_fp, FILE *out_fp, Login login, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex);
 };
 //-------------------------------------------------------------------
+
+void logout(FILE *out_fp, CpMem &curCpMem, CmMem &curCmMem);
+
 class LogoutUI
 {
 public:
     void startInterface(FILE* out_fp);
-    void requestLogout(FILE* out_fp);
+    void requestLogout(FILE* out_fp, CpMem &curCpMem, CmMem &curCmMem);
 };
 class Logout
 {
@@ -96,7 +109,7 @@ class DropUI
 {
 public:
     void startInterface(FILE* out_fp);
-    void requestDrop(FILE* out_fp);
+    void requestDrop(FILE* out_fp, Mem curMem);
 };
 
 
