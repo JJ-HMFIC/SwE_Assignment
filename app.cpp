@@ -2,74 +2,67 @@
 
 using namespace std;
 
-// CmMem
-// CmMem::CmMem(char* company) {
-//     this->company = company;
-// }
-
-// char* CmMem::getCompany() {
-//     return company;
-// }
-
 // AppInfo
-AppInfo::AppInfo() {
-    this->company = (char*)"";
-    this->job = (char*)"";
-    this->num = 0;
-    this->date = (char*)"";
+AppInfo::AppInfo()
+{
+    this->memNum = (char *)"";
+    this->company = (char *)"";
+    this->ssn = (char *)"";
+    this->job = (char *)"";
+    this->num = (char *)"";
+    this->date = (char *)"";
 }
 
-AppInfo::AppInfo(char* company, char* job, int num, char* date) {
+AppInfo::AppInfo(char *memNum, char *company, char *ssn, char *job, char *num, char *date)
+{
+    this->memNum = memNum;
     this->company = company;
+    this->ssn = ssn;
     this->job = job;
     this->num = num;
     this->date = date;
 }
 
-char* AppInfo::getCompany() {
+char *AppInfo::getMemNum()
+{
+    return memNum;
+}
+
+char *AppInfo::getCompany()
+{
     return company;
 }
 
-char* AppInfo::getJob() {
+char *AppInfo::getSsn()
+{
+    return ssn;
+}
+
+char *AppInfo::getJob()
+{
     return job;
 }
 
-int AppInfo::getNum() {
+char *AppInfo::getNum()
+{
     return num;
 }
 
-char* AppInfo::getDate() {
+char *AppInfo::getDate()
+{
     return date;
 }
 
-// AddApp
-AppInfo AddApp::addNewApp(char* company, char* job, int num, char* date) {
-    return AppInfo(company, job, num, date);
-}
-
-// AddAppUI
-void AddAppUI::startInterface(FILE* out_fp) {
-    fprintf(out_fp, "4.1. aldifhalifh\n");
-}
-
-AppInfo AddAppUI::createNewApp(FILE* in_fp, FILE* out_fp, CmMem curMem, AddApp& addApp) {
-    char* company = new char[MAX_STRING];
-    char* job = new char[MAX_STRING];
-    char* date = new char[MAX_STRING];
-    int num;
-
-    fscanf(in_fp, "%s %s %d %s", company, job, &num, date);
-    fprintf(out_fp, "> %s %s %d %s\n", company, job, num, date);
-    return addApp.addNewApp(company, job, num, date);
-}
-
 // ShowApp
-AppInfo* ShowApp::showCompanyApps(AppInfo* appInfo, int& appInfoIndex, CmMem& curMem) {
-    char* company = curMem.getName();
-    AppInfo* myAppInfo = new AppInfo[appInfoIndex];
+AppInfo *ShowApp::showCompanyApps(AppInfo *appInfo, int &appInfoIndex, CmMem &curMem)
+{
+    char *memID = curMem.getID();
+    AppInfo *myAppInfo = new AppInfo[appInfoIndex];
 
-    for (int i = 0; i < appInfoIndex; i++) {
-        if (strcmp(appInfo[i].getCompany(), company) == 0) {
+    for (int i = 0; i < appInfoIndex; i++)
+    {
+        if (strcmp(appInfo[i].getMemNum(), memID) == 0)
+        {
             myAppInfo[i] = appInfo[i];
         }
     }
@@ -77,20 +70,70 @@ AppInfo* ShowApp::showCompanyApps(AppInfo* appInfo, int& appInfoIndex, CmMem& cu
 }
 
 // ShowAppUI
-void ShowAppUI::startInterface(FILE* out_fp) {
-    fprintf(out_fp, "4.2. asdfsadsfdf\n");
+void ShowAppUI::startInterface(FILE *out_fp)
+{
+    fprintf(out_fp, "4.3. 지원 정보 조회\n");
 }
 
-void ShowAppUI::showMyApps(FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem, ShowApp& showApp) {
-    AppInfo* appInfoArray = showApp.showCompanyApps(appInfo, appInfoIndex, curMem);
+void ShowAppUI::showMyApps(FILE *out_fp, AppInfo *appInfo, int &appInfoIndex, CmMem &curMem, ShowApp &showApp)
+{
+    AppInfo *appInfoArray = showApp.showCompanyApps(appInfo, appInfoIndex, curMem);
     displayApps(out_fp, appInfoIndex, appInfoArray);
 }
 
-void ShowAppUI::displayApps(FILE* out_fp, int& appInfoIndex, AppInfo* appInfo) {
-    for (int i = 0; i < appInfoIndex; i++) {
-        if (appInfo[i].getCompany()[0] == '\0') {
+void ShowAppUI::displayApps(FILE *out_fp, int &appInfoIndex, AppInfo *appInfo)
+{
+    for (int i = 0; i < appInfoIndex; i++)
+    {
+        if (appInfo[i].getCompany()[0] != '\0')
+        {
+            fprintf(out_fp, "> %s %s %s %s %s\n", appInfo[i].getCompany(), appInfo[i].getSsn(), appInfo[i].getJob(), appInfo[i].getNum(), appInfo[i].getDate());
+        }
+    }
+}
+
+void showApps(FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem)
+{
+    ShowAppUI showAppUI = ShowAppUI();
+    ShowApp showApp = ShowApp();
+
+    showAppUI.startInterface(out_fp);
+    showAppUI.showMyApps(out_fp, appInfo, appInfoIndex, curMem, showApp);
+}
+
+// cancel
+void cancelApp(FILE *in_fp, FILE *out_fp, AppInfo *appInfo, int &appInfoIndex, CmMem &curMem)
+{
+    CancelApplyInfoUI cancelApplyInfoUI = CancelApplyInfoUI();
+    CancelApplyInfo cancelApplyInfo = CancelApplyInfo();
+
+    cancelApplyInfoUI.startInterface(out_fp);
+    cancelApplyInfoUI.cancelApplyInfo(in_fp, out_fp, appInfo, appInfoIndex, curMem, cancelApplyInfo);
+}
+
+void CancelApplyInfoUI::startInterface(FILE *out_fp)
+{
+    fprintf(out_fp, "4.4. 지원 정보 취소\n");
+}
+
+void CancelApplyInfoUI::cancelApplyInfo(FILE *in_fp, FILE *out_fp, AppInfo *appInfo, int &appInfoIndex, CmMem &curMem, CancelApplyInfo &cancelApplyInfo)
+{
+    char *ssn = new char[MAX_STRING];
+    fscanf(in_fp, "%s", ssn);
+
+    cancelApplyInfo.cancelApplyInfo(out_fp, appInfo, appInfoIndex, curMem, ssn);
+}
+
+void CancelApplyInfo::cancelApplyInfo(FILE *out_fp, AppInfo *appInfo, int &appInfoIndex, CmMem &curMem, char *ssn)
+{
+
+    for (int i = 0; i < appInfoIndex; i++)
+    {
+        if (strcmp(appInfo[i].getSsn(), ssn) == 0)
+        {
+            fprintf(out_fp, "> %s %s %s\n", appInfo[i].getCompany(), appInfo[i].getSsn(), appInfo[i].getJob());
+            appInfo[i] = AppInfo();
             break;
         }
-        fprintf(out_fp, "> %s %s %d %s\n", appInfo[i].getCompany(), appInfo[i].getJob(), appInfo[i].getNum(), appInfo[i].getDate());
     }
 }

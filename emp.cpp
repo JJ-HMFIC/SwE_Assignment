@@ -2,27 +2,18 @@
 
 using namespace std;
 
-// 
-
-// CpMem::CpMem(char *cpName) {
-//     this->cpName = cpName;
-// }
-
-// char *CpMem::getName() {
-//     return cpName;
-// }
-
-// 
 
 EmpInfo::EmpInfo(){
     this->cpName = (char *)"";
+    this->ssn = (char *)"";
     this->job = (char *)"";
     this->num = (char *)"";
     this->date = (char *)"";
 }
 
-EmpInfo::EmpInfo(char *cpName, char *job, char *num, char *date) {
+EmpInfo::EmpInfo(char *cpName, char *ssn, char *job, char *num, char *date) {
     this->cpName = cpName;
+    this->ssn = ssn;
     this->job = job;
     this->num = num;
     this->date = date;
@@ -30,6 +21,10 @@ EmpInfo::EmpInfo(char *cpName, char *job, char *num, char *date) {
 
 char *EmpInfo::getCpName() {
     return cpName;
+}
+
+char *EmpInfo::getSsn() {
+    return ssn;
 }
 
 char *EmpInfo::getJob() {
@@ -48,13 +43,13 @@ char *EmpInfo::getDate() {
 //
 
 
-EmpInfo addEmp(FILE *in_fp, FILE *out_fp, EmpInfo *empInfo, int &empInfoIndex, CpMem &curMem) {
+void addEmp(FILE *in_fp, FILE *out_fp, EmpInfo *empInfo, int &empInfoIndex, CpMem &curMem) {
     AddEmpUI addEmpUI = AddEmpUI();
     AddEmp addEmp = AddEmp();
     EmpInfo newEmp;
 
     addEmpUI.startInterface(out_fp);
-    return addEmpUI.createNewEmp(in_fp, out_fp, curMem, addEmp);
+    empInfo[empInfoIndex++] = addEmpUI.createNewEmp(in_fp, out_fp, curMem, addEmp);
 }
 
 void showEmps(FILE *out_fp, EmpInfo *empInfo, int &empInfoIndex, CpMem &curMem) {
@@ -71,18 +66,18 @@ void AddEmpUI::startInterface(FILE *out_fp) {
 
 EmpInfo AddEmpUI::createNewEmp(FILE *in_fp, FILE *out_fp, CpMem curMem, AddEmp &addEmp) {
     char *cpName = curMem.getName();
-    printf("cpName: %s\n", cpName);
+    char *ssn = curMem.getNum();
     char *job = new char[MAX_STRING];
     char *date = new char[MAX_STRING];
     char *num = new char[MAX_STRING];
 
     fscanf(in_fp, "%s %s %s", job, num, date);
-    fprintf(out_fp, "> %s %s %s %s\n", cpName, job, num, date);
-    return addEmp.addNewEmp(cpName, job, num, date);
+    fprintf(out_fp, "> %s %s %s\n", job, num, date);
+    return addEmp.addNewEmp(cpName, ssn, job, num, date);
 }
 
-EmpInfo AddEmp::addNewEmp(char *cpName, char *job, char *num, char *date) {
-    return EmpInfo(cpName, job, num, date);
+EmpInfo AddEmp::addNewEmp(char *cpName, char *ssn, char *job, char *num, char *date) {
+    return EmpInfo(cpName, ssn, job, num, date);
 }
 
 void ShowEmpUI::startInterface(FILE *out_fp) {
@@ -103,7 +98,7 @@ EmpInfo *ShowEmp::showCompanyEmps(EmpInfo *empInfo, int &empInfoIndex, CpMem &cu
     EmpInfo *myEmpInfo = new EmpInfo[empInfoIndex];
 
     for (int i = 0; i < empInfoIndex; i++) {
-        if (empInfo[i].getCpName() == cpName) {
+        if (strcmp(empInfo[i].getCpName(), cpName) == 0) {
             myEmpInfo[i] = empInfo[i];
         }
     }
@@ -113,8 +108,8 @@ EmpInfo *ShowEmp::showCompanyEmps(EmpInfo *empInfo, int &empInfoIndex, CpMem &cu
 void ShowEmpUI::displayEmps(FILE *out_fp, int &empInfoIndex, EmpInfo *empInfo) {
     for (int i = 0; i < empInfoIndex; i++) {
         if (empInfo[i].getCpName()[0] == '\0') {
-            break;
+            continue;
         }
-        fprintf(out_fp, "> %s %s %s %s\n", empInfo[i].getCpName(), empInfo[i].getJob(), empInfo[i].getNum(), empInfo[i].getDate());
+        fprintf(out_fp, "> %s %s %s\n", empInfo[i].getJob(), empInfo[i].getNum(), empInfo[i].getDate());
     }
 }

@@ -9,37 +9,23 @@ using namespace std;
 
 class AppInfo {
 private:
+    char* memNum;
     char* company;
+    char* ssn;
     char* job;
-    int num;
+    char* num;
     char* date;
 public:
     AppInfo();
-    AppInfo(char* company, char* job, int num, char* date);
+    AppInfo(char* memNum, char* company, char* ssn, char* job, char* num, char* date);
+    char* getMemNum();
     char* getCompany();
+    char* getSsn();
     char* getJob();
-    int getNum();
+    char* getNum();
     char* getDate();
 };
 
-// class CmMem {
-// private:
-//     char* company;
-// public:
-//     CmMem(char* company);
-//     char* getCompany();
-// };
-
-class AddApp {
-public:
-    AppInfo addNewApp(char* company, char* job, int num, char* date);
-};
-
-class AddAppUI {
-public:
-    void startInterface(FILE* out_fp);
-    AppInfo createNewApp(FILE* in_fp, FILE* out_fp, CmMem curMem, AddApp& addApp);
-};
 
 class ShowApp {
 public:
@@ -53,5 +39,16 @@ public:
     void displayApps(FILE* out_fp, int& appInfoIndex, AppInfo* appInfo);
 };
 
-AppInfo addApp(FILE* in_fp, FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem);
+class CancelApplyInfo {
+public:
+    void cancelApplyInfo(FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem, char* ssn);
+};
+
+class CancelApplyInfoUI {
+public:
+    void startInterface(FILE* out_fp);
+    void cancelApplyInfo(FILE* in_fp, FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem, CancelApplyInfo& cancelApplyInfo);
+};
+
 void showApps(FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem);
+void cancelApp(FILE* in_fp, FILE* out_fp, AppInfo* appInfo, int& appInfoIndex, CmMem& curMem);

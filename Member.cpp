@@ -1,4 +1,5 @@
 #include "Member.h"
+
 using namespace std;
 
 Mem::Mem(char *id, char *pw)
@@ -43,6 +44,11 @@ char *CpMem::getName()
     return cpName;
 }
 
+char *CpMem::getNum()
+{
+    return cpNum;
+}
+
 CmMem::CmMem(char *id, char *pwd, char *name, char *number)
     : Mem(id, pwd), cmName(name), cmNum(number){};
 
@@ -71,7 +77,7 @@ void signIn(int type, FILE *in_fp, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, i
 void SignInUI::startInterface(FILE *out_fp)
 {
     fprintf(out_fp, "1.1. 회원 가입\n");
-} // 처음 시작
+}
 
 void SignInUI::requestSignIn(int type, FILE *in_fp, FILE *out_fp, SignIn &signinClass, CpMem *cpMems, CmMem *cmMems, int &cpMemIndex, int &cmMemIndex)
 {
@@ -81,9 +87,8 @@ void SignInUI::requestSignIn(int type, FILE *in_fp, FILE *out_fp, SignIn &signin
     char *ID = new char[MAX_STRING];
     char *PW = new char[MAX_STRING];
 
-    fscanf(in_fp, "%s %s %s %s", name, num, ID, PW); // 읽기
-    fprintf(out_fp, "> %s %s %s %s", name, num, ID, PW);
-    // SignIn(type, ID ,PW, name, num);
+    fscanf(in_fp, "%s %s %s %s", name, num, ID, PW);
+    fprintf(out_fp, "> %d %s %s %s %s\n", type, name, num, ID, PW);
     signinClass.signin(type, ID, PW, name, num, cpMems, cmMems, cpMemIndex, cmMemIndex);
 }
 
@@ -102,7 +107,7 @@ CmMem SignIn::addCmMem(char *id, char *pwd, char *name, char *number)
 {
     return CmMem(id, pwd, name, number);
 }
-//-------------------------------------------------------------------
+
 
 void login(FILE *in_fp, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex)
 {
@@ -116,28 +121,23 @@ void login(FILE *in_fp, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCp
 void LoginUI::startInterface(FILE *out_fp)
 {
     fprintf(out_fp, "2.1. 로그인 \n");
-} // 처음 시작
+}
 
 void LoginUI::requestLogin(FILE *in_fp, FILE *out_fp, Login login, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex)
 {
     char *ID = new char[MAX_STRING];
     char *PW = new char[MAX_STRING];
-    fscanf(in_fp, "%s %s", ID, PW);
-    // fprintf(out_fp, ">%s %s",ID, PW); // 틀렸을 때 감안해서 위치 변경 가능
-    //  Login(ID,PW,out_fp);
+    fscanf(in_fp, "%s %s\n", ID, PW);
     login.login(ID, PW, out_fp, cpMems, cmMems, curCpMem, curCmMem, cpMemIndex, cmMemIndex);
 }
 
 void Login::login(char *id, char *pwd, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex) // 수정 필요
 {
-
-    // if (mem.login(id, pwd))
-    //     fprintf(out_fp, "> %s %s", id, pwd);
     for (int i = 0; i < cpMemIndex; i++)
     {
         if (cpMems[i].login(id, pwd))
         {
-            fprintf(out_fp, "> %s %s", id, pwd);
+            fprintf(out_fp, "> %s %s\n", id, pwd);
             curCpMem = cpMems[i];
             return;
         }
@@ -146,7 +146,7 @@ void Login::login(char *id, char *pwd, FILE *out_fp, CpMem *cpMems, CmMem *cmMem
     {
         if (cmMems[i].login(id, pwd))
         {
-            fprintf(out_fp, "> %s %s", id, pwd);
+            fprintf(out_fp, "> %s %s\n", id, pwd);
             curCmMem = cmMems[i];
             return;
         }
@@ -157,13 +157,12 @@ bool Mem::login(char *id, char *pwd)
     if (strcmp(id, memID) == 0 && strcmp(pwd, memPW) == 0)
 
     {
-        // user = id;
         return true;
     }
     else
         return false;
 }
-//-------------------------------------------------------------------
+
 
 void logout(FILE *out_fp, CpMem &curCpMem, CmMem &curCmMem)
 {
@@ -182,15 +181,15 @@ void LogoutUI::requestLogout(FILE *out_fp, CpMem &curCpMem, CmMem &curCmMem)
     char *id;
     if (curCpMem.getName()[0] != '\0')
     {
-        id = curCpMem.getName();
+        id = curCpMem.getID();
         curCpMem = CpMem();
     }
     else
     {
-        id = curCmMem.getName();
+        id = curCmMem.getID();
         curCmMem = CmMem();
     }
-    fprintf(out_fp, "> %s", id);
+    fprintf(out_fp, "> %s\n", id);
     Logout();
 }
 Logout::Logout()
@@ -199,9 +198,9 @@ Logout::Logout()
 }
 void Mem::logout()
 {
-    // user = "";
 }
-//------------------------------------------------------------------
+
+
 void DropUI::startInterface(FILE *out_fp)
 {
     fprintf(out_fp, "1.2. 회원탈퇴 \n");
@@ -213,5 +212,4 @@ void DropUI::requestDrop(FILE *out_fp, Mem curMem)
 }
 void Drop::deleteUser()
 {
-    // 소멸자 써야하는데 how?
 }

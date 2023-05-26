@@ -1,7 +1,6 @@
 #ifndef MEMBER_H
 #define MEMBER_H
 
-#include <iostream>
 #include <string>
 
 #include <cstdio>
@@ -12,7 +11,6 @@ using namespace std;
 #define INPUT_FILE_NAME "input.txt"
 #define OUTPUT_FILE_NAME "output.txt"
 
-// string user = "";
 
 class Mem {
 private:
@@ -31,19 +29,20 @@ public:
 
 class CpMem : public Mem {
 private:
-    char* cpName; // 회사 이름
-    char* cpNum; // 사업자 번호 
+    char* cpName;
+    char* cpNum;
 
 public:
     CpMem();
     CpMem(char* id, char* pwd, char* name, char* number);
     char *getName();
+    char *getNum();
 };
 
 class CmMem : public Mem {
 private:
     char* cmName;
-    char* cmNum; // 주민 번호 
+    char* cmNum;
 
 public:
     CmMem();
@@ -52,8 +51,8 @@ public:
 };
 void registerCpMem(char* id, char* pw, char* name, char* number);
 void registerCmMem(char* id, char* pw, char* name, char* number);
-//----------------------------------------------------------------------
-// Mem signIn(FILE* in_fp, FILE* out_fp);
+
+
 void signIn(int type, FILE* in_fp, FILE* out_fp, CpMem* cpMems, CmMem* cmMems, int& cpMemIndex, int& cmMemIndex);
 
 class SignIn
@@ -78,8 +77,6 @@ void login(FILE *in_fp, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCp
 
 class Login    
 {
-// private:
-//     Mem mem;
 public:
     void login(char *id, char *pwd, FILE *out_fp, CpMem *cpMems, CmMem *cmMems, CpMem &curCpMem, CmMem &curCmMem, int &cpMemIndex, int &cmMemIndex);
 };

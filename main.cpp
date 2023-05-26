@@ -1,17 +1,20 @@
 #include "emp.h"
 #include "Member.h"
 #include "app.h"
+#include "seap.h"
+#include "stat.h"
 
 void doTask();
 void join();
-void program_exit(FILE *out_fp);
+void program_exit(FILE* out_fp);
 
-FILE *in_fp, *out_fp;
+FILE* in_fp;
+FILE* out_fp;
 
 int main()
 {
-    in_fp = fopen(INPUT_FILE_NAME, "r+");
-    out_fp = fopen(OUTPUT_FILE_NAME, "w+");
+    in_fp = fopen(INPUT_FILE_NAME, "r");
+    out_fp = fopen(OUTPUT_FILE_NAME, "w");
 
     doTask();
 
@@ -39,9 +42,8 @@ void doTask()
 
         switch (menu_level_1)
         {
-        case 1: // 회원 가입
-            switch (menu_level_2)
-            {
+        case 1:
+            switch (menu_level_2) {
             case 1:
                 fscanf(in_fp, "%d", &type);
                 signIn(type, in_fp, out_fp, cpMembers, cmMembers, cpMemIndex, cmMemIndex);
@@ -51,11 +53,10 @@ void doTask()
         case 2:
             switch (menu_level_2)
             {
-            case 1: // 로그인
-                // curMem = login(in_fp, out_fp, members);
+            case 1:
                 login(in_fp, out_fp, cpMembers, cmMembers, curCpMem, curCmMem, cpMemIndex, cmMemIndex);
                 break;
-            case 2: // 로그아웃
+            case 2:
                 logout(out_fp, curCpMem, curCmMem);
                 break;
             }
@@ -64,24 +65,38 @@ void doTask()
         case 3:
             switch (menu_level_2)
             {
-            case 1: // 채용 정보 추가
-                empInfo[empInfoIndex++] = addEmp(in_fp, out_fp, empInfo, empInfoIndex, curCpMem);
+            case 1:
+                addEmp(in_fp, out_fp, empInfo, empInfoIndex, curCpMem);
                 break;
-            case 2: // 채용 정보 조회
+            case 2:
                 showEmps(out_fp, empInfo, empInfoIndex, curCpMem);
                 break;
             }
             break;
         case 4:
-            // switch (menu_level_2)
-            // {
-            // case 1: //
-            //     addApp(in_fp, out_fp, appInfo, appInfoIndex, curMem);
-            //     break;
-            // case 2:
-            //     showApps(out_fp, appInfo, appInfoIndex, curMem);
-            //     break;
-            // }
+            switch (menu_level_2)
+            {
+            case 1:
+                viewEmp(in_fp, out_fp, empInfo, empInfoIndex);
+                break;
+            case 2:
+                appInfo[appInfoIndex++] = applyEmp(in_fp, out_fp, empInfo, empInfoIndex, appInfoIndex, curCmMem);
+                break;
+            case 3:
+                showApps(out_fp, appInfo, appInfoIndex, curCmMem);
+                break;
+            case 4:
+                cancelApp(in_fp, out_fp, appInfo, appInfoIndex, curCmMem);
+                break;
+            }
+            break;
+        case 5:
+            switch (menu_level_2)
+            {
+            case 1:
+                stat(out_fp, curCpMem, curCmMem, appInfo, appInfoIndex, empInfo, empInfoIndex);
+                break;
+            }
             break;
         case 6:
             switch (menu_level_2)
@@ -96,7 +111,7 @@ void doTask()
     }
 }
 
-void program_exit(FILE *out_fp)
+void program_exit(FILE* out_fp)
 {
     fprintf(out_fp, "6.1. 종료\n");
     fclose(in_fp);
